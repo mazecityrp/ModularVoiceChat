@@ -1,6 +1,7 @@
 package fr.nathanael2611.modularvoicechat.client.voice;
 
 import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.FrameworkMessage;
 import com.esotericsoftware.kryonet.Listener;
 import fr.nathanael2611.modularvoicechat.client.voice.audio.SpeakerManager;
 import fr.nathanael2611.modularvoicechat.network.objects.HelloYouAreAPlayer;
@@ -24,6 +25,10 @@ public class KryoNetClientListener extends Listener
         {
             VoiceClientManager.getClient().setHandshakeDone();
         }
+        if(object instanceof FrameworkMessage.Ping && ((FrameworkMessage.Ping) object).isReply)
+        {
+            this.voiceClient.onUdpAnswer();
+        }
         if(SpeakerManager.isRunning())
         {
             if (object instanceof VoiceToClient)
@@ -38,5 +43,12 @@ public class KryoNetClientListener extends Listener
             }
         }
         super.received(connection, object);
+    }
+
+    @Override
+    public void disconnected(Connection connection)
+    {
+        this.voiceClient.onDisconnected();
+        super.disconnected(connection);
     }
 }

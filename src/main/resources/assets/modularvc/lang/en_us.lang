@@ -23,4 +23,5 @@ mvc.config.stereo.on=Stereo: ON
 mvc.error.cantconnect=Cannot connect to voice-server, try reconnecting! (or see logs for complete error)
 mvc.error.muted=§4§lYou cannot speak because you are muted by a server operator!
 mvc.messages.connected=Successfully established connection with voice-server!
+mvc.messages.reconnecting=Voice connection lost, reconnecting...
 mvc.error.notconnected=Not connected to vocal-server. Please try reconnecting.
