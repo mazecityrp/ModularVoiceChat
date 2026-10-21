@@ -29,6 +29,8 @@ public class PacketConnectVoice implements IMessage
     private int port;
     /* Player to link name */
     private String playerName;
+    /* Secret to send back to the VoiceServer, see VoiceTokens */
+    private String token;
     /* Show who speak */
     private boolean showWhoSpeak;
 
@@ -45,11 +47,12 @@ public class PacketConnectVoice implements IMessage
      *
      * @param port VoiceServer port
      */
-    public PacketConnectVoice(String ip, int port, String playerName, boolean showWhoSpeak)
+    public PacketConnectVoice(String ip, int port, String playerName, String token, boolean showWhoSpeak)
     {
         this.ip = ip;
         this.port = port;
         this.playerName = playerName;
+        this.token = token;
         this.showWhoSpeak = showWhoSpeak;
     }
 
@@ -65,6 +68,7 @@ public class PacketConnectVoice implements IMessage
         this.port = buf.readInt();
         this.playerName = ByteBufUtils.readUTF8String(buf);
         this.showWhoSpeak = buf.readBoolean();
+        this.token = ByteBufUtils.readUTF8String(buf);
     }
 
     /**
@@ -79,6 +83,7 @@ public class PacketConnectVoice implements IMessage
         buf.writeInt(this.port);
         ByteBufUtils.writeUTF8String(buf, this.playerName);
         buf.writeBoolean(this.showWhoSpeak);
+        ByteBufUtils.writeUTF8String(buf, this.token);
     }
 
     public static class Message implements IMessageHandler<PacketConnectVoice, IMessage>
@@ -106,7 +111,7 @@ public class PacketConnectVoice implements IMessage
                     if (MicroManager.isRunning()) MicroManager.stop();
                     if (SpeakerManager.isRunning()) SpeakerManager.stop();
                     Helpers.log("[pre] Handle VoiceClient start.");
-                    VoiceClientManager.start(message.playerName, host, message.port);
+                    VoiceClientManager.start(message.playerName, message.token, host, message.port);
                     MicroManager.start();
                     SpeakerManager.start();
                     ClientEventHandler.showWhoSpeak = message.showWhoSpeak;

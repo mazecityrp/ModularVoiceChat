@@ -27,6 +27,8 @@ public class VoiceServer
 
     public final HashBiMap<Integer, Connection> CONNECTIONS_MAP = HashBiMap.create();
 
+    private final VoiceTokens tokens = new VoiceTokens();
+
     private IVoiceDispatcher dispatcher;
     private int port;
     private Server server;
@@ -43,7 +45,11 @@ public class VoiceServer
                 this.dispatcher = event.getVoiceDispatcher();
             }
         }
-        this.server = new Server(10000000, 10000000);
+        // KryoNet allocates both buffers for every TCP connection, before it authenticates: at 10 MB each,
+        // a few hundred idle connections were enough to exhaust the server heap. Voice only travels over UDP
+        // (Opus frames of at most 1000 bytes) and TCP only carries tiny handshake messages, so a 16 KB write
+        // queue and a 64 KB object buffer (the largest possible UDP datagram) leave plenty of room.
+        this.server = new Server(16384, 65536);
         KryoObjects.registerObjects(this.server.getKryo());
         server.start();
         try
@@ -130,5 +136,10 @@ public class VoiceServer
     public IVoiceDispatcher getVoiceDispatcher()
     {
         return dispatcher;
+    }
+
+    public VoiceTokens getTokens()
+    {
+        return tokens;
     }
 }

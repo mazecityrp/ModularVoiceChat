@@ -13,16 +13,17 @@ public class VoiceClientManager
     /**
      * Start the VoiceClient
      * @param playerName the player name
+     * @param token the secret received from the server, proving to the VoiceServer that we are this player
      * @param host VoiceServer hostname
      * @param port VoiceServer port
      */
-    public static synchronized void start(String playerName, String host, int port)
+    public static synchronized void start(String playerName, String token, String host, int port)
     {
         if(isStarted())
         {
             stop();
         }
-        INSTANCE = new VoiceClient(playerName, host, port);
+        INSTANCE = new VoiceClient(playerName, token, host, port);
     }
 
     /**

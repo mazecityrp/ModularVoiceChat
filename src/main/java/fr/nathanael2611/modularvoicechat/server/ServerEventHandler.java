@@ -19,9 +19,19 @@ public class ServerEventHandler
         if (VoiceServerManager.isStarted())
         {
             Helpers.log("Requesting " + event.player.getName() + " to connect to voice-server... Sending packet.");
-            VanillaPacketHandler.getInstance().getNetwork().sendTo(new PacketConnectVoice(ServerConfig.generalConfig.forcedHostname, VoiceServerManager.getServer().getPort(), event.player.getName(), ServerConfig.generalConfig.showWhoSpeak), Helpers.getPlayerMP(event.player));
+            String token = VoiceServerManager.getServer().getTokens().create(event.player.getEntityId());
+            VanillaPacketHandler.getInstance().getNetwork().sendTo(new PacketConnectVoice(ServerConfig.generalConfig.forcedHostname, VoiceServerManager.getServer().getPort(), event.player.getName(), token, ServerConfig.generalConfig.showWhoSpeak), Helpers.getPlayerMP(event.player));
         }
 
+    }
+
+    @SubscribeEvent
+    public void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event)
+    {
+        if (VoiceServerManager.isStarted())
+        {
+            VoiceServerManager.getServer().getTokens().remove(event.player.getEntityId());
+        }
     }
 
 
