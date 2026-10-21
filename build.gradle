@@ -18,7 +18,8 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'com.github.johnrengelman.shadow'
 
 
-// -PmodVersion=1.1 builds a jar the MazeCity server accepts (FML requires the same version on both sides)
+// -PmodVersion=1.2 builds the MazeCity jar (FML requires the same version on both sides; 1.2 adds the voice token,
+// so a 1.1 client cannot talk to a 1.2 server and FML must refuse it)
 version = project.hasProperty('modVersion') ? project.modVersion : "1.1.1"
 group = "fr.nathanael2611.modularvoicechat" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "ModularVoiceChat"

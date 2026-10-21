@@ -46,11 +46,16 @@ public class KryoNetServerListener extends Listener
             HelloImAPlayer hello = ((HelloImAPlayer) object);
             Helpers.log("A new player tried to connect to VoiceServer named: " + hello.playerName);
             EntityPlayerMP playerMP = Helpers.getPlayerByUsername(hello.playerName);
-            if (playerMP != null)
+            if (playerMP != null && voiceServer.getTokens().isValid(playerMP.getEntityId(), hello.token))
             {
                 voiceServer.CONNECTIONS_MAP.put(playerMP.getEntityId(), connection);
                 Helpers.log("Successfully added " + hello.playerName + " to voice-server connected-players!");
                 connection.sendTCP(new HelloYouAreAPlayer());
+            }
+            else if (playerMP != null)
+            {
+                Helpers.log("Wrong voice token for " + hello.playerName + ", closing the connection from " + connection.getRemoteAddressTCP());
+                connection.close();
             }
             else
             {

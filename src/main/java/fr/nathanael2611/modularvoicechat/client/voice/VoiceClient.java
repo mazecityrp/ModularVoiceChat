@@ -27,6 +27,8 @@ public class VoiceClient
 
     /* The player name */
     private String playerName;
+    /* The secret proving to the VoiceServer that we are this player */
+    private String token;
     /* The server port */
     private int port;
     /* The server host */
@@ -46,11 +48,13 @@ public class VoiceClient
     /**
      * Constructor
      * @param playerName the player name
+     * @param token the secret received from the server
      * @param port the server port
      */
-    VoiceClient(String playerName, String host, int port)
+    VoiceClient(String playerName, String token, String host, int port)
     {
         this.playerName = playerName;
+        this.token = token;
         this.port = port;
         this.host = host;
         this.client = new Client(10000000, 10000000);
@@ -187,7 +191,7 @@ public class VoiceClient
     private void authenticate(String name)
     {
         Helpers.log("Try authenticate with username " + name);
-        send(new HelloImAPlayer(name));
+        send(new HelloImAPlayer(name, this.token));
     }
 
     /**
